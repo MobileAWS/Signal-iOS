@@ -1,3 +1,5 @@
+> **Note:** This is a test change added to the top of the README to verify the automated task pipeline (TASK-PGAT).
+
 # Signal iOS
 
 Signal is a free and open source messaging app for simple private communication with friends.
