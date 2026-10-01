@@ -61,8 +61,13 @@ All EC and Kyber pre-keys share one GRDB table, `PreKey`, modeled by
 - `identity: OWSIdentity`, `namespace: Namespace`, `keyId: UInt32` — the **unique**
   triple; key IDs must not be reused within a (namespace, identity)
   (`PreKeyRecord.swift:13-21`). **[High]**
+<<<<<<< ours
 - `Namespace`: `oneTime = 0`, `signed = 2`, `kyber = 1`
   (`PreKeyRecord.swift:35-38`). **[High]**
+=======
+- `Namespace`: `oneTime = 0`, `kyber = 1`, `signed = 2`
+  (`PreKeyRecord.swift:36-40`). **[High]**
+>>>>>>> theirs
 - `isOneTime: Bool` — redundant for EC keys (they're namespaced), but
   **load-bearing for Kyber** because one-time and last-resort Kyber keys share the
   `kyber` namespace (`PreKeyRecord.swift:23-30`). **[High]**
@@ -265,6 +270,7 @@ Scheduling lives in `PreKeyManagerImpl`; execution lives in `PreKeyTaskManager`.
 
 - `createForRegistration` generates keys **and may create a new identity key** if
   none exists (`getOrCreateIdentityKeyPair`,
+<<<<<<< ours
   `PreKeyTaskManager.swift:239`, `createForRegistration` at
   `PreKeyTaskManager.swift:80-90`). **[High]**
 - `createForProvisioning` uses the identity key pair handed down from the primary
@@ -280,6 +286,19 @@ Scheduling lives in `PreKeyManagerImpl`; execution lives in `PreKeyTaskManager`.
   (removes the just-generated signed + last-resort keys)
   (`PreKeyTaskManager.swift:101-114`, `wipeKeysAfterFailedRegistration` at
   `PreKeyTaskManager.swift:455-462`). **[High]**
+=======
+  `PreKeyTaskManager.swift:189-203`, `PreKeyTaskManager.swift:215-230`). **[High]**
+- `createForProvisioning` uses the identity key pair handed down from the primary
+  during linking — it **never** creates one
+  (`PreKeyTaskManager.swift:98-106`, `PreKeyTaskManager.swift:205-213`). **[High]**
+- Both generate a signed pre-key + one last-resort Kyber key and persist **before**
+  returning (`persistKeysPriorToUpload`), so a crash between generation and upload
+  doesn't lose the keys (`PreKeyTaskManager.swift:82-108`). **[High]**
+- `persistRegistrationBundle` finalizes: on success →
+  `persistStateAfterUpload`; on failure → `wipeKeysAfterFailedRegistration`
+  (removes the just-generated signed + last-resort keys)
+  (`PreKeyTaskManager.swift:110-124`, `PreKeyTaskManager.swift:~384-392`). **[High]**
+>>>>>>> theirs
 
 ### 7.2 Routine refresh / rotation
 
@@ -369,8 +388,13 @@ decides *when* operations run and serializes them. **[High]**
 
 - **Serialization**: a `ConcurrentTaskQueue(concurrentLimit: 1)` forces all
   pre-key operations to run one at a time
+<<<<<<< ours
   (`PreKeyManagerImpl.swift:37`). The comment at
   `PreKeyManagerImpl.swift:33-36` explains client+server state coordination
+=======
+  (`PreKeyManagerImpl.swift:39`). The comment at
+  `PreKeyManagerImpl.swift:34-38` explains client+server state coordination
+>>>>>>> theirs
   requires serial execution. **[High]**
 - **Throttling**: `checkPreKeysIfNecessary` → `checkPreKeys(shouldThrottle: true)`
   requires the main app to be active (else throws) and skips the one-time check if

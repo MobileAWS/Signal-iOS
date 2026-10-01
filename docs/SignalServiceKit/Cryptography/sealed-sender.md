@@ -31,7 +31,11 @@ per message. A **Sender Key** lets a sender encrypt a message **once** and send 
 same ciphertext to many recipients, after first distributing the Sender Key to each
 recipient device via a **Sender Key Distribution Message (SKDM)**. **[Medium]**
 (inferred from the SKDM-tracking comment at
+<<<<<<< ours
 `SignalServiceKit/Axolotl/SenderKeyStore.swift:95-107`)
+=======
+`SignalServiceKit/Axolotl/SenderKeyStore.swift:90-104`)
+>>>>>>> theirs
 
 ```mermaid
 graph TD
@@ -50,6 +54,7 @@ graph TD
 
 ### 2.1 `SenderKeyRecord` (table `SenderKey`)
 
+<<<<<<< ours
 `SenderKeyRecord` (`SignalServiceKit/Axolotl/SenderKeyStore.swift:11-105`) stores a
 Sender Key — ours or someone else's: **[High]**
 
@@ -62,21 +67,44 @@ Sender Key — ours or someone else's: **[High]**
   (`SenderKeyStore.swift:20-26`). **[High]**
 - `serializedRecord: Data` — the opaque LibSignal `SenderKeyRecord` bytes
   (`SenderKeyStore.swift:22`). **[High]**
+=======
+`SenderKeyRecord` (`SignalServiceKit/Axolotl/SenderKeyStore.swift:10-91`) stores a
+Sender Key — ours or someone else's: **[High]**
+
+- `ownerRecipientId` + `ownerDeviceId` + `distributionId (UUID)` — the owning
+  (device, distribution) tuple (`SenderKeyStore.swift:14-18`). **[High]**
+- `deletionType: DeletionType` — `thisDevice = 0` (our own sending key, deletable at
+  will) vs. `otherDevice = 1` (received from someone else)
+  (`SenderKeyStore.swift:30-39`). **[High]**
+- `insertedAt` / `insertedAtDate` — creation time, used for age-based expiry
+  (`SenderKeyStore.swift:19-24`). **[High]**
+- `serializedRecord: Data` — the opaque LibSignal `SenderKeyRecord` bytes
+  (`SenderKeyStore.swift:21`). **[High]**
+>>>>>>> theirs
 
 ### 2.2 `SenderKeySentToDeviceRecord` (table `SenderKeySentToDevice`)
 
 Tracks SKDM delivery with a 1:N relationship to `SenderKeyRecord`
+<<<<<<< ours
 (`SignalServiceKit/Axolotl/SenderKeyStore.swift:95-144`, struct declared at
 `SenderKeyStore.swift:108`): one row per `(senderKeyId, recipientId, deviceId,
 registrationId)` indicating that device has a copy of our Sender Key and can decrypt
 (`SenderKeyStore.swift:118-129`). The stored `registrationId` lets the sender detect
 a device re-install and re-distribute (`SenderKeyStore.swift:126-129`). Insert conflict
 policy is `.replace` on insert (`SenderKeyStore.swift:111`). **[High]**
+=======
+(`SenderKeyStore.swift:88-150`): one row per `(senderKeyId, recipientId, deviceId,
+registrationId)` indicating that device has a copy of our Sender Key and can decrypt
+(`SenderKeyStore.swift:118-150`). The stored `registrationId` lets the sender detect
+a device re-install and re-distribute (`SenderKeyStore.swift:131-135`). Insert conflict
+policy is `.replace` on insert (`SenderKeyStore.swift:99`). **[High]**
+>>>>>>> theirs
 
 ### 2.3 Distribution-id mapping
 
 A per-thread `distributionId` (UUID) is kept in a `KeyValueStore` collection
 `SenderKeyStore_SendingDistributionId`
+<<<<<<< ours
 (`SignalServiceKit/Axolotl/SenderKeyManager.swift:10`), via
 `fetchOrCreateDistributionId(forThreadUniqueId:)`
 (`SenderKeyManager.swift:203-211`, within `SenderKeySendingManager`;
@@ -84,6 +112,14 @@ A per-thread `distributionId` (UUID) is kept in a `KeyValueStore` collection
 the thread is removed (`didRemoveThread`,
 `SenderKeyManager.swift:587-589`, via `removeDistributionId` at
 `SenderKeyManager.swift:212-214`). **[High]**
+=======
+(`SignalServiceKit/Axolotl/SenderKeyManager.swift:9`), via
+`fetchOrCreateDistributionId(forThreadUniqueId:)`
+(`SenderKeyManager.swift:~? fetchOrCreateDistributionId`,
+`SenderKeyManager.swift:` within `SenderKeySendingManager`). The id is removed when
+the thread is removed (`didRemoveThread`,
+`SenderKeyManager.swift` `ThreadRemoverObserver`). **[High]**
+>>>>>>> theirs
 
 ---
 
@@ -98,6 +134,7 @@ graph TD
     SEND["SenderKeySendingManager\n(: LibSignalClient.SenderKeyStore,\n ThreadRemoverObserver)"] --> SKM
 ```
 
+<<<<<<< ours
 `SenderKeyManager` (`SenderKeyManager.swift:8-141`) holds the stores and recipient
 helpers. Two thin adapters conform to `LibSignalClient.SenderKeyStore` and differ
 only in **context** (`SenderKeyReceivingManager` at `SenderKeyManager.swift:145-168`
@@ -117,6 +154,25 @@ which requires the sender's `ServiceId` to be an **ACI**
 store (`_loadSenderKey`, `SenderKeyManager.swift:99-119`) then falls back to the old
 store (`_loadOldSenderKey`, `SenderKeyManager.swift:121-133`), and bypasses a
 malformed record by returning `nil` (`SenderKeyManager.swift:91-95`).
+=======
+`SenderKeyManager` (`SenderKeyManager.swift:8-31`) holds the stores and recipient
+helpers. Two thin adapters conform to `LibSignalClient.SenderKeyStore` and differ
+only in **context** (`SenderKeyManager.swift` — `SenderKeyReceivingManager` and
+`SenderKeySendingManager`): **[High]**
+
+- `SenderKeyReceivingManager.storeSenderKey` stores with
+  `deletionType: .otherDevice` (keys arriving **from** other devices)
+  (`SenderKeyManager.swift` `SenderKeyReceivingManager.storeSenderKey`). **[High]**
+- `SenderKeySendingManager.storeSenderKey` stores with
+  `deletionType: .thisDevice` and never updates the inserted-at date
+  (`shouldUpdateInsertedAtDate: false`)
+  (`SenderKeyManager.swift` `SenderKeySendingManager.storeSenderKey`). **[High]**
+
+Both load via `senderKeyManager.loadSenderKey`, which requires the sender's
+`ServiceId` to be an **ACI** (`"must have ACI for sender keys"`), tries the new
+store then falls back to the old store, and bypasses a malformed record by returning
+`nil` (`SenderKeyManager.swift` `loadSenderKey`/`_loadSenderKey`/`_loadOldSenderKey`).
+>>>>>>> theirs
 **[High]**
 
 ---
@@ -124,7 +180,11 @@ malformed record by returning `nil` (`SenderKeyManager.swift:91-95`).
 ## 4. SKDM: deciding who needs a copy (`readyRecipients`)
 
 The heart of send-side correctness is `SenderKeySendingManager.readyRecipients`
+<<<<<<< ours
 (`SenderKeyManager.swift:236-332`). It computes, for each intended
+=======
+(`SenderKeyManager.swift` `readyRecipients`). It computes, for each intended
+>>>>>>> theirs
 recipient, whether every device already has our current Sender Key (and thus can
 decrypt without a fresh SKDM). **[High]**
 
@@ -165,6 +225,7 @@ Edge cases: **[High]**
 
 - A **PNI** recipient whose ACI is known cannot use a Sender Key
   (`!recipient.canSendToPni()` → skipped,
+<<<<<<< ours
   `SenderKeyManager.swift:308-311`). **[High]**
 - `SignalError.sessionNotFound` while reading device state → that recipient is "not
   ready" (needs a 1:1 session first). Any other error → defensively "not ready"
@@ -172,6 +233,15 @@ Edge cases: **[High]**
 - A device with **no** registration ID is assumed new and forces an SKDM
   (`sentToRecipientDevices` returns `nil`,
   `SenderKeyManager.swift:359-380`, specifically the guard at `:365-369`). **[High]**
+=======
+  `SenderKeyManager.swift` `readyRecipients`). **[High]**
+- `SignalError.sessionNotFound` while reading device state → that recipient is "not
+  ready" (needs a 1:1 session first). Any other error → defensively "not ready".
+  **[High]**
+- A device with **no** registration ID is assumed new and forces an SKDM
+  (`sentToRecipientDevices` returns `nil`,
+  `SenderKeyManager.swift` `sentToRecipientDevices`). **[High]**
+>>>>>>> theirs
 
 ---
 
@@ -180,6 +250,7 @@ Edge cases: **[High]**
 - `buildSenderKeyDistributionMessage(forThreadUniqueId:...)` creates a
   `LibSignalClient.SenderKeyDistributionMessage` from the thread's distribution id,
   using `self` as the LibSignal `SenderKeyStore`
+<<<<<<< ours
   (`SenderKeyManager.swift:382-403`). It migrates any
   legacy key first (to cover resend-response flows) (`SenderKeyManager.swift:391-397`). **[High]**
 - After sending SKDMs, `recordSentSenderKeys` upserts a `SenderKeySentToDevice` row
@@ -188,12 +259,23 @@ Edge cases: **[High]**
   not recorded) (`SenderKeyManager.swift:443-471`, catch at `:466-468`). **[High]**
 - `resetDeliveryRecord` clears the sent-to rows for a `(senderKeyId, recipientId)`
   (`SenderKeyStore.swift:149-160`, `SenderKeyManager.swift:473-476`).
+=======
+  (`SenderKeyManager.swift` `buildSenderKeyDistributionMessage`). It migrates any
+  legacy key first (to cover resend-response flows). **[High]**
+- After sending SKDMs, `recordSentSenderKeys` upserts a `SenderKeySentToDevice` row
+  per `(recipient, device)` via `upsertSentToRecord`; if the Sender Key was deleted
+  in the meantime, the constraint failure is caught and logged (the record is simply
+  not recorded) (`SenderKeyManager.swift` `recordSentSenderKeys`). **[High]**
+- `resetDeliveryRecord` clears the sent-to rows for a `(senderKeyId, recipientId)`
+  (`SenderKeyStore.swift:155-166`, `SenderKeyManager.swift` `resetDeliveryRecord`).
+>>>>>>> theirs
   **[High]**
 
 ---
 
 ## 6. Legacy migration (`OldSenderKeyStore`)
 
+<<<<<<< ours
 `OldSenderKeyStore` (`SignalServiceKit/Axolotl/OldSenderKeyStore.swift:13-81`) is a
 `KeyValueStore` (collection `SenderKeyStore_KeyMetadata`,
 `OldSenderKeyStore.swift:27`) keyed by
@@ -219,12 +301,39 @@ decode fallbacks (`OldSenderKeyStore.swift:153-172`). **[High]**
   (`SenderKeyManager.swift:538-582`).
 
 `resetAll` (`SenderKeyManager.swift:32-42`) wipes the old KV store, the
+=======
+`OldSenderKeyStore` (`SignalServiceKit/Axolotl/OldSenderKeyStore.swift:13-45`) is a
+`KeyValueStore` (collection `SenderKeyStore_KeyMetadata`) keyed by
+`"<ACI>.<distributionId>"` (`OldSenderKeyStore.swift:16-18`). Its `KeyMetadata`
+Codable supports **three historical layouts** (V1 UUID→devices, V2
+address→recipient, V3 address→`SKDMSendInfo`) with best-effort decode fallbacks
+(`OldSenderKeyStore.swift:106-187`). **[High]**
+
+`SenderKeySendingManager.migrateSenderKeyIfNeeded`
+(`SenderKeyManager.swift` `migrateSenderKeyIfNeeded`): **[High]**
+
+- Entirely **gated** behind `BuildFlags.decodeOldSenderKeys`; if off, no-op. **[High]**
+- Reads/removes the old metadata (always deletes it once migration is attempted,
+  even on error).
+- Validates ownership: must be `isForEncrypting`, owned by `localAci` +
+  `localDeviceId`, and the matching `distributionId` (else `owsFailDebug` + abort).
+- Inserts the migrated `SenderKeyRecord` (deletion type `.thisDevice`,
+  `shouldUpdateInsertedAtDate: true`, creation date from old metadata) and recreates
+  the sent-to rows from `oldKeyMetadata.sentKeyInfo`.
+
+`resetAll` (`SenderKeyManager.swift` `resetAll`) wipes the old KV store, the
+>>>>>>> theirs
 distribution-id store, and (FK-ordered) `SenderKeySentToDevice` then `SenderKey`.
 **[High]**
 
 > **Feature flag.** `BuildFlags.decodeOldSenderKeys` also gates
+<<<<<<< ours
 > `_loadOldSenderKey` (`SenderKeyManager.swift:121-133`, guard at `:126-128`); when
 > disabled, legacy keys are neither read nor migrated. **[High]**
+=======
+> `_loadOldSenderKey` (`SenderKeyManager.swift` `_loadOldSenderKey`); when disabled,
+> legacy keys are neither read nor migrated. **[High]**
+>>>>>>> theirs
 
 ---
 
@@ -232,6 +341,7 @@ distribution-id store, and (FK-ordered) `SenderKeySentToDevice` then `SenderKey`
 
 | Trigger | Effect | Citation |
 | --- | --- | --- |
+<<<<<<< ours
 | `now - insertedAtDate >= maxSenderKeyAge` | delete Sender Key, full redistribute | `SignalServiceKit/Axolotl/SenderKeyManager.swift:279-283` (`readyRecipients`) |
 | A sent-to recipient leaves the group | delete Sender Key | `SignalServiceKit/Axolotl/SenderKeyManager.swift:290-294` (`readyRecipients`) |
 | Thread removed | remove thread's distribution id | `SignalServiceKit/Axolotl/SenderKeyManager.swift:587-589` (`didRemoveThread`) |
@@ -241,6 +351,16 @@ distribution-id store, and (FK-ordered) `SenderKeySentToDevice` then `SenderKey`
 `maxSenderKeyAge` is supplied by the caller (the message send path, out of scope);
 the store itself only compares against it
 (`SenderKeyManager.swift:279`, within `readyRecipients`). **[High]**
+=======
+| `now - insertedAtDate >= maxSenderKeyAge` | delete Sender Key, full redistribute | `SignalServiceKit/Axolotl/SenderKeyManager.swift` `readyRecipients` |
+| A sent-to recipient leaves the group | delete Sender Key | `SignalServiceKit/Axolotl/SenderKeyManager.swift` `readyRecipients` |
+| Thread removed | remove thread's distribution id | `SignalServiceKit/Axolotl/SenderKeyManager.swift` `didRemoveThread` |
+| `deleteSenderKey(forThreadUniqueId:...)` | delete our Sender Key for the thread | `SignalServiceKit/Axolotl/SenderKeyManager.swift` `deleteSenderKey` |
+| `resetAll` | wipe all Sender Key state | `SignalServiceKit/Axolotl/SenderKeyManager.swift` `resetAll` |
+
+`maxSenderKeyAge` is supplied by the caller (the message send path, out of scope);
+the store itself only compares against it (`readyRecipients`). **[High]**
+>>>>>>> theirs
 
 ---
 
@@ -248,14 +368,23 @@ the store itself only compares against it
 
 - Sender Keys are the batching layer that the sealed-sender **multi-recipient**
   endpoint rides on: once recipients are "ready", a single ciphertext goes to the
+<<<<<<< ours
   multi-recipient endpoint (SKDM-tracking comment,
   `SenderKeyStore.swift:95-107`; readiness computed by `readyRecipients`,
   `SenderKeyManager.swift:236-332`). **[High]** / endpoint invocation **[Medium]**
+=======
+  multi-recipient endpoint (`readyRecipients` comment,
+  `SenderKeyStore.swift:95-104`). **[High]** / endpoint invocation **[Medium]**
+>>>>>>> theirs
   (the send call is out of tree).
 - The **unidentified access key** (the symmetric key gating sealed-sender delivery)
   appears in this tree via `OWSUDManager.udAccessKey(for:tx:)`, which Key
   Transparency reads to assemble `E164Info`
+<<<<<<< ours
   (`SignalServiceKit/KeyTransparency/KeyTransparencyManager.swift:128-144`). The UD
+=======
+  (`SignalServiceKit/KeyTransparency/KeyTransparencyManager.swift:131-142`). The UD
+>>>>>>> theirs
   **manager** and sealed-sender **certificate** logic are defined outside the
   reviewed directories — **intent undetermined — no evidence in source** here for
   the full sealed-sender envelope path. **[Low]**
@@ -266,6 +395,7 @@ the store itself only compares against it
 
 | Rule / error | Where | Citation |
 | --- | --- | --- |
+<<<<<<< ours
 | Sender Keys require an ACI sender | `storeSenderKey`/`loadSenderKey` | `SignalServiceKit/Axolotl/SenderKeyManager.swift:56` and `:82` (`"must have ACI for sender keys"`) |
 | Malformed Sender Key record → bypass (`nil`) | `loadSenderKey` | `SignalServiceKit/Axolotl/SenderKeyManager.swift:91-95` |
 | PNI recipient with known ACI can't use Sender Key | `readyRecipients` | `SignalServiceKit/Axolotl/SenderKeyManager.swift:308-311` |
@@ -274,6 +404,16 @@ the store itself only compares against it
 | Recording sent-to after key deletion | caught `ConstraintError`, logged | `SignalServiceKit/Axolotl/SenderKeyManager.swift:466-468` (`recordSentSenderKeys`) |
 | Legacy migration disabled | `BuildFlags.decodeOldSenderKeys` | `SignalServiceKit/Axolotl/SenderKeyManager.swift:486` (`migrateSenderKeyIfNeeded`), `:126-128` (`_loadOldSenderKey`) |
 | Unmigratable V1 legacy delivery data | reset to empty (resend SKDM) | `SignalServiceKit/Axolotl/OldSenderKeyStore.swift:167-171` |
+=======
+| Sender Keys require an ACI sender | `storeSenderKey`/`loadSenderKey` | `SignalServiceKit/Axolotl/SenderKeyManager.swift` (`"must have ACI for sender keys"`) |
+| Malformed Sender Key record → bypass (`nil`) | `loadSenderKey` | `SignalServiceKit/Axolotl/SenderKeyManager.swift` `loadSenderKey` |
+| PNI recipient with known ACI can't use Sender Key | `readyRecipients` | `SignalServiceKit/Axolotl/SenderKeyManager.swift` `readyRecipients` |
+| Missing 1:1 session → recipient not ready | `readyRecipients` | `SignalServiceKit/Axolotl/SenderKeyManager.swift` `readyRecipients` |
+| Device without registrationId → forces SKDM | `sentToRecipientDevices` | `SignalServiceKit/Axolotl/SenderKeyManager.swift` `sentToRecipientDevices` |
+| Recording sent-to after key deletion | caught `ConstraintError`, logged | `SignalServiceKit/Axolotl/SenderKeyManager.swift` `recordSentSenderKeys` |
+| Legacy migration disabled | `BuildFlags.decodeOldSenderKeys` | `SignalServiceKit/Axolotl/SenderKeyManager.swift` `migrateSenderKeyIfNeeded`/`_loadOldSenderKey` |
+| Unmigratable V1 legacy delivery data | reset to empty (resend SKDM) | `SignalServiceKit/Axolotl/OldSenderKeyStore.swift:178-185` |
+>>>>>>> theirs
 
 ---
 
