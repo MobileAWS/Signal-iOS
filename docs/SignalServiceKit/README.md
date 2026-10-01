@@ -1,3 +1,79 @@
+<<<<<<< ours
+# SignalServiceKit Subsystems
+
+This documentation covers three related SignalServiceKit (SSK) subsystems:
+
+1. **[Attachments](Attachments/README.md)** — the V2 attachment model, content validation,
+   encryption, the up/download pipelines, CDN interaction, thumbnails, playback, view-once,
+   orphan cleanup, and the attachment backfill flow.
+2. **[Disappearing Messages](DisappearingMessages/README.md)** — expiration configuration,
+   timer-start triggers, and the generic expiry job (shared with the `Expiration/` folder).
+3. **[Voice Messages](VoiceMessage/README.md)** — interrupted-draft persistence for in-progress
+   voice memos.
+
+## Conventions used in these docs
+
+- **Citations** are given as `File.swift:line`, pointing at the definition being described.
+  Line numbers reflect the state of the tree at authoring time and may drift as code changes.
+- **Confidence labels** appear on claims about behavior:
+  - **HIGH** — the file was read in full and the claim is directly supported by the code.
+  - **MEDIUM** — the claim is derived from signatures / partial reads / cross-file inference.
+  - **LOW** — the claim is an educated inference not fully verified in-source.
+- Diagrams are [Mermaid](https://mermaid.js.org/). GitHub renders them natively.
+
+## Subsystem map
+
+```mermaid
+graph TD
+    subgraph Attachments
+        Model[V2 Model<br/>Attachment / Reference / Stream / Pointer]
+        Validate[ContentValidation]
+        Store[AttachmentStore]
+        Download[Downloads]
+        Upload[Upload pipeline + CDN]
+        Backfill[AttachmentBackfill]
+        Media[Thumbnails / AudioWaveform / Playback / ViewOnce]
+        Orphan[OrphanedAttachments]
+    end
+    subgraph DisappearingMessages
+        DMConfig[DM Config Store]
+        DMJob[DisappearingMessagesExpirationJob]
+        ExpBase[ExpirationJob base]
+    end
+    subgraph VoiceMessage
+        Draft[VoiceMessageInterruptedDraftStore]
+    end
+
+    Validate --> Model
+    Store --> Model
+    Download --> Store
+    Download --> Validate
+    Upload --> Store
+    Backfill --> Upload
+    Backfill --> Store
+    Media --> Model
+    Orphan --> Store
+    DMJob --> ExpBase
+    Draft -. m4a file .-> Model
+```
+
+## Where things live
+
+| Area | Source directory | Doc |
+|------|------------------|-----|
+| Attachment limits / padding | `SignalServiceKit/Attachments/` | [Attachments/Core.md](Attachments/Core.md) |
+| Media utils / blurhash / V2 model | `SignalServiceKit/Messages/Attachments/` | [Attachments/Core.md](Attachments/Core.md), [Attachments/V2-Model.md](Attachments/V2-Model.md) |
+| Content validation | `.../V2/ContentValidation/` | [Attachments/ContentValidation.md](Attachments/ContentValidation.md) |
+| Store / Records | `.../V2/AttachmentStore/`, `.../V2/Records/` | [Attachments/Store-and-Records.md](Attachments/Store-and-Records.md) |
+| Manager / DataSource | `.../V2/AttachmentManager/`, `.../V2/DataSource/` | [Attachments/Manager.md](Attachments/Manager.md) |
+| Downloads | `.../V2/Downloads/` | [Attachments/Downloads.md](Attachments/Downloads.md) |
+| Upload + CDN | `SignalServiceKit/Upload/` | [Attachments/Upload.md](Attachments/Upload.md) |
+| Thumbnails/Waveform/Playback/ViewOnce | `.../V2/{Thumbnails,AudioWaveform,Playback,ViewOnce}/` | [Attachments/Media.md](Attachments/Media.md) |
+| Orphan cleanup | `.../V2/OrphanedAttachments/` | [Attachments/OrphanedAttachments.md](Attachments/OrphanedAttachments.md) |
+| Backfill | `SignalServiceKit/AttachmentBackfill/` | [Attachments/Backfill.md](Attachments/Backfill.md) |
+| Disappearing messages | `SignalServiceKit/DisappearingMessages/`, `SignalServiceKit/Expiration/` | [DisappearingMessages/README.md](DisappearingMessages/README.md) |
+| Voice messages | `SignalServiceKit/VoiceMessage/` | [VoiceMessage/README.md](VoiceMessage/README.md) |
+=======
 # Signal iOS — Identity & Registration Subsystems
 
 This documentation set covers the first-party source in five directories of
@@ -100,3 +176,4 @@ graph LR
 
 See each subsystem document for the detailed design, per-type purpose,
 validation/business rules, error paths, and server interactions.
+>>>>>>> theirs

@@ -19,12 +19,21 @@ for the current checkout.
 Signal is built from a CocoaPods workspace that references the app project plus
 the generated Pods project:
 
+<<<<<<< ours
 - `Signal.xcworkspace/contents.xcworkspacedata:1-10` — the workspace references
   two file groups: `group:Signal.xcodeproj` and `group:Pods/Pods.xcodeproj`.
 - `Signal.xcodeproj/project.pbxproj` — the single app project (~2.4 MB) that
   defines all first-party targets.
 - `BUILDING.md:38` / `BUILDING.md:41` — the canonical entry point is to open
   `Signal.xcworkspace` (`open Signal.xcworkspace`).
+=======
+- `Signal.xcworkspace/contents.xcworkspacedata:1-11` — the workspace references
+  two file groups: `group:Signal.xcodeproj` and `group:Pods/Pods.xcodeproj`.
+- `Signal.xcodeproj/project.pbxproj` — the single app project (~2.4 MB) that
+  defines all first-party targets.
+- `BUILDING.md:28-33` — the canonical entry point is
+  `open Signal.xcworkspace`.
+>>>>>>> theirs
 
 Workspace shared data:
 
@@ -42,12 +51,17 @@ The five first-party targets (matching the module boundary map in
 | --- | --- | --- |
 | `Signal` | `Signal.app` | Main application |
 | `SignalNSE` | `SignalNSE.appex` | Notification Service Extension |
+<<<<<<< ours
 | `SignalShareExtension` | `SignalShareExtension.appex` | Share Extension (app extension) |
+=======
+| `SignalShareExtension` | `SignalSAE` (XPC) | Share Extension |
+>>>>>>> theirs
 | `SignalServiceKit` | `SignalServiceKit.framework` | Core service/data layer |
 | `SignalUI` | `SignalUI` framework | Shared UI layer |
 
 Each also has a test target: `SignalTests`, `SignalUITests`,
 `SignalServiceKitTests` (declared in the Podfile at
+<<<<<<< ours
 `Podfile:59`, `Podfile:73`, `Podfile:81`). The product/blueprint names come from
 the shared schemes (e.g. `Signal.app` at
 `Signal.xcodeproj/xcshareddata/xcschemes/Signal.xcscheme:18`,
@@ -56,6 +70,12 @@ the shared schemes (e.g. `Signal.app` at
 `SignalServiceKit.framework` at `.../SignalServiceKit.xcscheme:19`). The
 `SignalShareExtension.appex` product is declared as a PBXFileReference with
 `explicitFileType = "wrapper.app-extension"` at `project.pbxproj:4872`.
+=======
+`Podfile:60-82`). The product/blueprint names come from the shared schemes
+(e.g. `Signal.app` at `Signal.xcodeproj/xcshareddata/xcschemes/Signal.xcscheme:16`,
+`SignalNSE.appex` at `.../SignalNSE.xcscheme:17`,
+`SignalServiceKit.framework` at `.../SignalServiceKit.xcscheme:19`).
+>>>>>>> theirs
 
 Bundle identifiers (all derived from `SIGNAL_BUNDLEID_PREFIX`):
 
@@ -75,15 +95,24 @@ Shared schemes live in
 
 - `Signal.xcscheme` — primary scheme. Tests run against `SignalTests`,
   `SignalUITests`, `SignalServiceKitTests`
+<<<<<<< ours
   (`Signal.xcscheme:65-99`); code coverage is enabled and limited to
   `Signal.app` + `SignalServiceKit.framework`
   (`Signal.xcscheme:48-63`). `MessageSendLogTests/testPlaintextMismatchFails()`
   is skipped (`Signal.xcscheme:94-98`). Archive uses the
   `App Store Release` configuration (`Signal.xcscheme:192-195`).
+=======
+  (`Signal.xcscheme:66-116`); code coverage is enabled and limited to
+  `Signal.app` + `SignalServiceKit.framework`
+  (`Signal.xcscheme:28-65`). `MessageSendLogTests/testPlaintextMismatchFails()`
+  is skipped (`Signal.xcscheme:108-112`). Archive uses the
+  `App Store Release` configuration (`Signal.xcscheme:230-233`).
+>>>>>>> theirs
 - `Signal-Staging.xcscheme` — staging variant.
 - `SignalNSE.xcscheme` — builds `SignalNSE.appex` + `Signal.app`, marked
   `wasCreatedForAppExtension = "YES"` (`SignalNSE.xcscheme:4`).
 - `SignalServiceKit.xcscheme` — framework scheme with autocreated test plan
+<<<<<<< ours
   (`SignalServiceKit.xcscheme:26-32`, `shouldAutocreateTestPlan = "YES"` at
   `SignalServiceKit.xcscheme:31`).
 - `SignalShareExtension.xcscheme` — marked
@@ -91,6 +120,13 @@ Shared schemes live in
 
 The `Signal` launch action defines debugging env vars and optional feature-flag
 launch arguments (`Signal.xcscheme:102-171`), including `USE_STAGING`,
+=======
+  (`SignalServiceKit.xcscheme:27-32`).
+- `SignalShareExtension.xcscheme`.
+
+The `Signal` launch action defines debugging env vars and optional feature-flag
+launch arguments (`Signal.xcscheme:117-213`), including `USE_STAGING`,
+>>>>>>> theirs
 `UBSAN_OPTIONS=suppressions=SignalUBSan.supp`,
 `TSAN_OPTIONS=suppressions=SignalTSan.supp` (sanitizer suppression files at
 `Signal/SignalUBSan.supp`, `Signal/SignalTSan.supp`).
@@ -106,7 +142,11 @@ Four build configurations are defined (named in `project.pbxproj`):
 
 The Podfile mirrors these in `configure_testable_build`, which enables
 `ONLY_ACTIVE_ARCH` and `ENABLE_TESTABILITY` for `Testable Release`, `Debug`, and
+<<<<<<< ours
 `Profiling` (`Podfile:144-151`).
+=======
+`Profiling` (`Podfile:150-159`).
+>>>>>>> theirs
 
 ### 1.5 Shared build settings (`Config/*.xcconfig`)
 
@@ -115,6 +155,7 @@ The `Config/` directory holds the xcconfig layering, included via the project:
 - `Config/Project.xcconfig` — treats warnings as errors across C/Swift/Metal:
   `GCC_TREAT_WARNINGS_AS_ERRORS = YES`,
   `OTHER_SWIFT_FLAGS = $(inherited) -warnings-as-errors`
+<<<<<<< ours
   (`Config/Project.xcconfig:6-9`). It `#include?`s `User.xcconfig` for
   per-developer overrides (`Config/Project.xcconfig:12`).
 - `Config/Project-Debug.xcconfig` — includes `Project.xcconfig` and
@@ -130,6 +171,21 @@ The `Config/` directory holds the xcconfig layering, included via the project:
 
 Other notable project-wide build settings (`project.pbxproj`, Testable Release
 block around lines 21943-21976):
+=======
+  (`Config/Project.xcconfig:6-10`). It `#include?`s `User.xcconfig` for
+  per-developer overrides (`Config/Project.xcconfig:13`).
+- `Config/Project-Debug.xcconfig` — includes `Project.xcconfig` and
+  `User-Debug.xcconfig` (`Config/Project-Debug.xcconfig:6-10`).
+- `Config/Project-Release.xcconfig` — includes `Project.xcconfig` and
+  `User-Release.xcconfig` (`Config/Project-Release.xcconfig:6-10`).
+- `Config/User.xcconfig.sample` — template that disables
+  warnings-as-errors (`OTHER_SWIFT_FLAGS = $(inherited) -no-warnings-as-errors`)
+  and documents the optional file-based camera input path
+  (`Config/User.xcconfig.sample:5-11`).
+
+Other notable project-wide build settings (`project.pbxproj`, Testable Release
+block around lines 21940-21976):
+>>>>>>> theirs
 
 - `SWIFT_VERSION = 5.0` (`project.pbxproj:21965`)
 - `SWIFT_COMPILATION_MODE = wholemodule` (`project.pbxproj:21953`)
@@ -139,8 +195,13 @@ block around lines 21943-21976):
   `SWIFT_UPCOMING_FEATURE_DEPRECATE_APPLICATION_MAIN`,
   `SWIFT_UPCOMING_FEATURE_INTERNAL_IMPORTS_BY_DEFAULT`.
 - `WARNING_CFLAGS` promotes several Objective-C warnings to errors
+<<<<<<< ours
   (`project.pbxproj:21967-21976`) — this list is intentionally kept in sync with
   the Podfile's `configure_warning_flags` (`Podfile:130-141`).
+=======
+  (`project.pbxproj:21968-21976`) — this list is intentionally kept in sync with
+  the Podfile's `configure_warning_flags` (`Podfile:117-128`).
+>>>>>>> theirs
 - `SDKROOT = iphoneos` (`project.pbxproj:21950`).
 
 ---
@@ -154,7 +215,11 @@ block around lines 21943-21976):
 - `Podfile:1` — `platform :ios, '15.0'`.
 - The Podfile's `promote_minimum_supported_version` bumps every pod whose
   deployment target is lower than the project min up to 15.0, suppressing
+<<<<<<< ours
   warnings (`Podfile:157-171`).
+=======
+  warnings (`Podfile:162-176`).
+>>>>>>> theirs
 
 ### 2.2 Notable deprecated / legacy API surface
 
@@ -164,15 +229,26 @@ Derived from build configuration (not from source docs):
   (`Signal/Signal-Info.plist`, `UIRequiredDeviceCapabilities` key) is a
   legacy declaration; the build itself **excludes `armv7`** via the Podfile's
   `disable_armv7`, which sets `EXCLUDED_ARCHS = armv7`
+<<<<<<< ours
   (`Podfile:181-187`). Modern builds are arm64-only.
 - `ENABLE_BITCODE = NO` is forced for all pods (`Podfile:173-179`); Bitcode is
+=======
+  (`Podfile:191-197`). Modern builds are arm64-only.
+- `ENABLE_BITCODE = NO` is forced for all pods (`Podfile:181-187`); Bitcode is
+>>>>>>> theirs
   deprecated by Apple.
 - The AppStore entitlement `com.apple.developer.pushkit.unrestricted-voip`
   (`Signal/Signal-AppStore.entitlements`) reflects the legacy PushKit VoIP
   path; the development entitlements omit it.
+<<<<<<< ours
 - `strip_valid_archs` (`Podfile:189-196`) rewrites generated pod xcconfigs to
   remove hard-coded `VALID_ARCHS` entries that CocoaPods still emits.
 - `update_frameworks_script` (`Podfile:202-213`) patches
+=======
+- `strip_valid_archs` (`Podfile:199-208`) rewrites generated pod xcconfigs to
+  remove hard-coded `VALID_ARCHS` entries that CocoaPods still emits.
+- `update_frameworks_script` (`Podfile:214-224`) patches
+>>>>>>> theirs
   `Pods-Signal-frameworks.sh` to work around a CocoaPods XCFramework→framework
   symlink bug (CocoaPods issue #7587).
 
@@ -266,9 +342,14 @@ and read), and Apple Music (`NS*UsageDescription` keys). Other notable keys:
   the extensions carry `8.31` — see `SignalNSE/Info.plist`,
   `SignalShareExtension/Info.plist`).
 - The `BuildDetails` dict is populated at build time by
+<<<<<<< ours
   `Scripts/update_plist_info.sh` (added at `Scripts/update_plist_info.sh:18`,
   with the `App Store Release` detail fields at
   `Scripts/update_plist_info.sh:21-30`).
+=======
+  `Scripts/update_plist_info.sh` for `App Store Release`
+  (`Scripts/update_plist_info.sh:19-33`).
+>>>>>>> theirs
 
 Extension `Info.plist` extension points:
 
@@ -301,13 +382,19 @@ no tracking domains:
 
 ### 4.1 CocoaPods (`Podfile` / `Podfile.lock`)
 
+<<<<<<< ours
 - `use_frameworks!` (`Podfile:3`) with source `https://cdn.cocoapods.org/`
   (`Podfile:9`). Pinned CocoaPods version: `COCOAPODS: 1.15.2`
+=======
+- `use_frameworks!` with source `https://cdn.cocoapods.org/`
+  (`Podfile:3-10`). Pinned CocoaPods version: `COCOAPODS: 1.15.2`
+>>>>>>> theirs
   (`Podfile.lock`, final line).
 - Shared "ui_pods" group (`Podfile:44-52`): `BonMot`, `PureLayout`,
   `lottie-ios`, plus MobileCoin stack (`LibMobileCoin/CoreHTTP`,
   `MobileCoin/CoreHTTP`).
 - Signal-maintained forks / prebuilt binaries:
+<<<<<<< ours
   - `LibSignalClient` from `signalapp/libsignal` tag `v0.103.1`
     (`Podfile:15`), with a prebuild checksum env
     `LIBSIGNAL_FFI_PREBUILD_CHECKSUM` (`Podfile:14`).
@@ -321,12 +408,28 @@ no tracking domains:
   `SDWebImageWebPCoder` (`Podfile:37`), `libwebp` (`Podfile:38`).
 - `SwiftProtobuf` pinned to `1.38.1` (`Podfile:12`); `CocoaLumberjack` only in
   `SignalServiceKit` (`Podfile:79`).
+=======
+  - `LibSignalClient` from `signalapp/libsignal` tag `v0.103.1`, with a
+    prebuild checksum env `LIBSIGNAL_FFI_PREBUILD_CHECKSUM`
+    (`Podfile:17-19`).
+  - `SignalRingRTC` from `signalapp/ringrtc` tag `v2.72.0`, with
+    `RINGRTC_PREBUILD_CHECKSUM` (`Podfile:21-24`).
+  - `SQLCipher` from `signalapp/sqlcipher` tag `v4.6.1-f_barrierfsync`
+    (`Podfile:31`).
+  - `libPhoneNumber-iOS` from `signalapp/libPhoneNumber-iOS` branch
+    `signal-master` (`Podfile:39`).
+- `GRDB.swift/SQLCipher`, `SDWebImage`, `SDWebImageWebPCoder`, `libwebp`
+  (`Podfile:28, 41-43`).
+- `SwiftProtobuf` pinned to `1.38.1` (`Podfile:12`); `CocoaLumberjack` only in
+  `SignalServiceKit` (`Podfile:84-90`).
+>>>>>>> theirs
 
 Resolved versions / integrity are locked in `Podfile.lock` (`PODS:`,
 `SPEC CHECKSUMS:`, and `CHECKOUT OPTIONS:` sections), e.g. GRDB.swift 5.26.0,
 LibSignalClient 0.103.1, SignalRingRTC 2.72.0, SQLCipher 4.6.1, SwiftProtobuf
 1.38.1. `PODFILE CHECKSUM: b8de764822afba0fea924066e4313b8885b3e87d`.
 
+<<<<<<< ours
 **`post_install` hooks** (`Podfile:89-103`) run a pipeline that: strips installed
 products, enables PureLayout for app extensions
 (`PURELAYOUT_APP_EXTENSIONS=1`, `Podfile:114-123`, with the flag set at
@@ -336,6 +439,17 @@ frameworks script, suppresses warnings on non-development pods, fixes the RingRT
 symlink, fetches RingRTC, and copies third-party acknowledgements into
 `Signal/Settings.bundle/Acknowledgements.plist` (`copy_acknowledgements`,
 `Podfile:250-375`).
+=======
+**`post_install` hooks** (`Podfile:94-112`) run a pipeline that: strips installed
+products, enables PureLayout for app extensions
+(`PURELAYOUT_APP_EXTENSIONS=1`, `Podfile:135-144`), syncs warning flags,
+configures testability, promotes min iOS version, disables Bitcode, disables
+armv7, strips `VALID_ARCHS`, patches the frameworks script, suppresses warnings
+on non-development pods, fixes the RingRTC symlink, fetches RingRTC, and copies
+third-party acknowledgements into
+`Signal/Settings.bundle/Acknowledgements.plist` (`copy_acknowledgements`,
+`Podfile:289-437`).
+>>>>>>> theirs
 
 ### 4.2 Git submodules (`.gitmodules`)
 
@@ -347,7 +461,11 @@ Two submodules (`.gitmodules`):
   `https://github.com/signalapp/Signal-Message-Backup-Tests` (`.gitmodules:4-6`).
 
 Per `INVENTORY.md`, both submodules are **not checked out** in this tree, so
+<<<<<<< ours
 their contents are excluded from inventory counts. `BUILDING.md:10`
+=======
+their contents are excluded from inventory counts. `BUILDING.md:9-11`
+>>>>>>> theirs
 emphasizes cloning `--recurse-submodules`.
 
 ### 4.3 Vendored podspecs (`ThirdParty/`)
@@ -382,6 +500,7 @@ emphasizes cloning `--recurse-submodules`.
 
 ### 5.1 Toolchain pinning
 
+<<<<<<< ours
 - `.xcode-version` → `Xcode 26.6` (the expected Xcode version that
   `Scripts/check_xcode_version.py` compares against).
 - `Scripts/check_xcode_version.py` compares `xcodebuild -version` against
@@ -393,6 +512,16 @@ emphasizes cloning `--recurse-submodules`.
   (`.github/workflows/main.yml:21`; the matrix build re-exports it via
   `.github/workflows/main.yml:39`), consistent with the `.xcode-version` value
   above.
+=======
+- `.xcode-version` → `26.63.4.9` (the expected Xcode version; this unusual value
+  is what `Scripts/check_xcode_version.py` compares against).
+- `Scripts/check_xcode_version.py` compares `xcodebuild -version` against
+  `.xcode-version`, with a `--relaxed` mode that ignores the patch version
+  (`Scripts/check_xcode_version.py:19-45`).
+- GitHub Actions pin `DEVELOPER_DIR = /Applications/Xcode_26.6.app` in each
+  workflow (`.github/workflows/main.yml:35-37`,
+  `precommit.yml`, `protobuf-check.yml`).
+>>>>>>> theirs
 
 ### 5.2 GitHub Actions (`.github/workflows/`)
 
@@ -402,6 +531,7 @@ emphasizes cloning `--recurse-submodules`.
   `clone-everything` action, sets up Ruby via `.ruby-version`, then runs
   `Scripts/build-and-test.sh`. On failure it uploads
   `~/Library/Logs/Signal-CI`; it always uploads the normalized DB schema from
+<<<<<<< ours
   `~/Library/Signal-iOS-Schema` (`main.yml:24-82`). A second job,
   `check_autogenstrings`, runs `Scripts/translation/auto-genstrings` and fails
   if `git diff` is non-empty (`main.yml:84-100`).
@@ -412,6 +542,18 @@ emphasizes cloning `--recurse-submodules`.
 - `protobuf-check.yml` — builds pinned `apple/swift-protobuf` (`v1.38.1`),
   regenerates protos (`SignalServiceKit/Protos` `make`), and fails on any diff
   (`protobuf-check.yml:46-90`).
+=======
+  `~/Library/Signal-iOS-Schema` (`main.yml:19-96`). A second job,
+  `check_autogenstrings`, runs `Scripts/translation/auto-genstrings` and fails
+  if `git diff` is non-empty (`main.yml:98-116`).
+- `precommit.yml` — builds pinned SwiftFormat (`v0.60.1`, ref
+  `c8e50ff…`) and clang-format, then runs `Scripts/precommit.py --ref
+  origin/<base>` on changed files, failing on any diff
+  (`precommit.yml:60-96`).
+- `protobuf-check.yml` — builds pinned `apple/swift-protobuf` (`v1.38.1`),
+  regenerates protos (`SignalServiceKit/Protos` `make`), and fails on any diff
+  (`protobuf-check.yml:46-96`).
+>>>>>>> theirs
 - `translation-check.yml`, `translation-tool.yml`,
   `translation-validator.yml` — localization checks.
 - `stale.yml` — stale issue/PR management.

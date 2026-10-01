@@ -150,8 +150,13 @@ graph LR
 **[High]** The extension and the main app are separate processes that share state
 through the **App Group container** and a **shared keychain group**, declared in
 [`SignalShareExtension.entitlements`](../../SignalShareExtension/SignalShareExtension.entitlements)
+<<<<<<< ours
 (`com.apple.security.application-groups` → `group.$(SIGNAL_BUNDLEID_PREFIX).signal.group`
 and `group.$(SIGNAL_BUNDLEID_PREFIX).signal.group.staging`; `keychain-access-groups`).
+=======
+(`com.apple.security.application-groups` → `group.$(SIGNAL_BUNDLEID_PREFIX).signal`
+and `.staging`; `keychain-access-groups`).
+>>>>>>> theirs
 
 **[High]** `ShareAppExtensionContext` resolves all shared paths from the app-group
 container: `appSharedDataDirectoryPath()` uses
