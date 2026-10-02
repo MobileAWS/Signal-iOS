@@ -152,11 +152,16 @@ through the **App Group container** and a **shared keychain group**, declared in
 [`SignalShareExtension.entitlements`](../../SignalShareExtension/SignalShareExtension.entitlements)
 <<<<<<< ours
 <<<<<<< ours
+<<<<<<< ours
 (`com.apple.security.application-groups` → `group.$(SIGNAL_BUNDLEID_PREFIX).signal.group`
 and `group.$(SIGNAL_BUNDLEID_PREFIX).signal.group.staging`; `keychain-access-groups`).
 =======
 (`com.apple.security.application-groups` → `group.$(SIGNAL_BUNDLEID_PREFIX).signal`
 and `.staging`; `keychain-access-groups`).
+>>>>>>> theirs
+=======
+(`com.apple.security.application-groups` → `group.$(SIGNAL_BUNDLEID_PREFIX).signal.group`
+and `group.$(SIGNAL_BUNDLEID_PREFIX).signal.group.staging`; `keychain-access-groups`).
 >>>>>>> theirs
 =======
 (`com.apple.security.application-groups` → `group.$(SIGNAL_BUNDLEID_PREFIX).signal.group`

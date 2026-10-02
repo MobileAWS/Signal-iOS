@@ -39,7 +39,11 @@ to the server:
 2. Zero or more **records** ("storage items"), each named by a 16-byte random
    identifier and a `type` enum (contact, groupv1, groupv2, account,
    storyDistributionList, callLink). Each record is independently encrypted.
+<<<<<<< ours
    **[High]** — `StorageService.swift:47-186` (`StorageIdentifier` /
+=======
+   **[High]** — `StorageService.swift:47-205` (`StorageIdentifier` /
+>>>>>>> theirs
    `StorageItem`).
 
 The server exposes three operations: fetch-latest-manifest (conditional on a
@@ -50,12 +54,21 @@ conflict**). All three live in `StorageService.swift`. **[High]**
 ```mermaid
 graph TD
     subgraph Server["Storage Service (server, sees only ciphertext)"]
+<<<<<<< ours
         Manifest["StorageManifest<br/>version N<br/>value = enc(ManifestRecord)"]
         Items["StorageItems<br/>key -> value = enc(StorageRecord)"]
     end
     subgraph Device["This device"]
         State["StorageServiceOperation.State<br/>(local mirror: version,<br/>recordIkm, id maps, change maps)"]
         DB[(GRDB: recipients, groups,<br/>threads, call links, settings)]
+=======
+        Manifest["StorageManifest\nversion N\nvalue = enc(ManifestRecord)"]
+        Items["StorageItems\nkey -> value = enc(StorageRecord)"]
+    end
+    subgraph Device["This device"]
+        State["StorageServiceOperation.State\n(local mirror: version,\nrecordIkm, id maps, change maps)"]
+        DB[(GRDB: recipients, groups,\nthreads, call links, settings)]
+>>>>>>> theirs
     end
 
     DB -->|build records| State

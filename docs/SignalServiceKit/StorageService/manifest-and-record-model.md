@@ -10,7 +10,11 @@ that translate between local database state and Storage Service protos. Sources:
 
 ## Storage identifiers
 
+<<<<<<< ours
 A `StorageService.StorageIdentifier` (`StorageService.swift:47-76`) names a
+=======
+A `StorageService.StorageIdentifier` (`StorageService.swift:47-81`) names a
+>>>>>>> theirs
 single record. It is: **[High]**
 
 ```swift

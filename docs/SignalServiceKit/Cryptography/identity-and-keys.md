@@ -119,10 +119,15 @@ rest of the app. **[High]**
 - Local identity key pairs are stored in a single `KeyValueStore` with collection
   `TSStorageManagerIdentityKeyStoreCollection`
 <<<<<<< ours
+<<<<<<< ours
   (`SignalServiceKit/Messages/OWSIdentityManager.swift:248-249`; field declared at
   `OWSIdentityManager.swift:216`). **[High]**
 =======
   (`SignalServiceKit/Messages/OWSIdentityManager.swift:171-173`). **[High]**
+>>>>>>> theirs
+=======
+  (`SignalServiceKit/Messages/OWSIdentityManager.swift:248-249`; field declared at
+  `OWSIdentityManager.swift:216`). **[High]**
 >>>>>>> theirs
 - They are keyed per-identity via `OWSIdentity.persistenceKey`:
   `TSStorageManagerIdentityKeyStoreIdentityKey` (ACI) and
@@ -131,9 +136,13 @@ rest of the app. **[High]**
 - `generateNewIdentityKeyPair()` is just `ECKeyPair.generateKeyPair()`
   (`OWSIdentityManager.swift:324-326`); `ECKeyPair.generateAndPersistNewIdentityKey(for:)`
 <<<<<<< ours
+<<<<<<< ours
   (`OWSIdentityManager.swift:1084-1090`) is a convenience extension. **[High]**
 =======
   (`OWSIdentityManager.swift:1082-1091`) is a convenience extension. **[High]**
+>>>>>>> theirs
+=======
+  (`OWSIdentityManager.swift:1084-1090`) is a convenience extension. **[High]**
 >>>>>>> theirs
 - `identityKeyPair(for:tx:)` reads the `ECKeyPair` object back out
   (`OWSIdentityManager.swift:328-330`). **[High]**
@@ -424,6 +433,9 @@ request returns empty `Data`; any `SecRandomCopyBytes` failure is a hard
 ### 7.4 One-shot AES & file encryption: `Cryptography`
 
 <<<<<<< ours
+<<<<<<< ours
+=======
+>>>>>>> theirs
 The `Cryptography` enum (`SignalServiceKit/Cryptography/Cryptography.swift:11-69`)
 provides `computeSHA256DigestOfFile` (`Cryptography.swift:13-25`) and a private
 `_crypt` wrapper over `CCCrypt` (AES, PKCS7) used by `encrypt`/`decrypt`
@@ -442,6 +454,7 @@ over `iv ‖ ciphertext ‖ hmac`, with an `encryptionKey ‖ authenticationKey`
 decrypt are **constant-time** (`ows_constantTimeIsEqual`) at
 `Cryptography.swift:759`, `Cryptography.swift:773`, and `Cryptography.swift:784`.
 **[High]**
+<<<<<<< ours
 =======
 The `Cryptography` enum (`SignalServiceKit/Cryptography/Cryptography.swift:10-69`)
 provides `computeSHA256DigestOfFile` and a private `_crypt` wrapper over `CCCrypt`
@@ -456,6 +469,8 @@ The large **attachment** encryption machinery (`AttachmentKey`,
 `32 + 32` bytes (`Cryptography.swift:72-91`, `Cryptography.swift:~350-470`).
 HMAC and digest comparisons on decrypt are **constant-time**
 (`ows_constantTimeIsEqual`) (`Cryptography.swift:~455-478`). **[High]**
+>>>>>>> theirs
+=======
 >>>>>>> theirs
 
 > **Scope.** Attachment encryption is a transport/storage concern, not the 1:1

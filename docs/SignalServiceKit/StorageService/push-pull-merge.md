@@ -168,7 +168,11 @@ device!", `:832`). The next version is `currentState.manifestVersion + 1`
 (`:835`), dispatched to either `createNewManifestPreservingRecords` (`:839`) or
 `createNewManifestAndRecords` (`:841`). **[High]**
 
+<<<<<<< ours
 `StorageServiceManagerManifestRotationMode` (`StorageServiceManager.swift:102-136`):
+=======
+`StorageServiceManagerManifestRotationMode` (`StorageServiceManager.swift:102-146`):
+>>>>>>> theirs
 **[High]**
 
 | Mode | Behavior | Precedence |
@@ -197,7 +201,11 @@ bookkeeping, and decryption-failure recovery — are documented in
 2. Refuse to merge a **lower** manifest version than local (`:1528`).
 3. Compute `newOrUpdatedItems = remoteKeys − localKeys` (`:1539`), plus any
    now-parseable previously-unknown identifiers.
+<<<<<<< ours
 4. Fetch + merge the **account record first** (`:1562`), then
+=======
+4. Fetch + merge the **account record first** (`:1558`), then
+>>>>>>> theirs
    `fetchAndMergeItemsInBatches` for the rest (`:1615`).
 5. Set `manifestVersion` and `recordIkm` to the remote's (`:1626`), clear
    `refetchLatestManifest`, recompute `invalidIdentifiers` (`:1671`), **re-mark

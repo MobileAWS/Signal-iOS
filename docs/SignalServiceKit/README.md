@@ -1,5 +1,6 @@
 <<<<<<< ours
 <<<<<<< ours
+<<<<<<< ours
 # SignalServiceKit Subsystems
 
 This documentation covers three related SignalServiceKit (SSK) subsystems:
@@ -75,6 +76,8 @@ graph TD
 | Disappearing messages | `SignalServiceKit/DisappearingMessages/`, `SignalServiceKit/Expiration/` | [DisappearingMessages/README.md](DisappearingMessages/README.md) |
 | Voice messages | `SignalServiceKit/VoiceMessage/` | [VoiceMessage/README.md](VoiceMessage/README.md) |
 =======
+=======
+>>>>>>> theirs
 =======
 >>>>>>> theirs
 # Signal iOS — Identity & Registration Subsystems
@@ -180,6 +183,9 @@ graph LR
 See each subsystem document for the detailed design, per-type purpose,
 validation/business rules, error paths, and server interactions.
 <<<<<<< ours
+<<<<<<< ours
+>>>>>>> theirs
+=======
 >>>>>>> theirs
 =======
 >>>>>>> theirs

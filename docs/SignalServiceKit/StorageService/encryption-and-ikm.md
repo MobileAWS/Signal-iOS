@@ -20,6 +20,7 @@ then derives per-blob keys from it. **[High]** — e.g.
 graph TD
     AEP["AccountEntropyPool"] --> MK["MasterKey"]
     MK -->|deriveStorageServiceKey| SSK["Storage Service Key"]
+<<<<<<< ours
     SSK -->|"deriveManifestKey(manifestVersion)"| MKey["Manifest key<br/>(per version)"]
     SSK -->|"deriveLegacyRecordKey(itemIdentifier)"| LRK["Legacy record key<br/>(per identifier)"]
     Manifest["Manifest.recordIkm (32B)<br/>stored in the manifest"] -->|"HKDF(info = prefix + identifier)"| RIK["Record key<br/>(per identifier)"]
@@ -27,6 +28,15 @@ graph TD
     MKey -. AES-256-GCM .-> EncM["enc(manifest proto)"]
     LRK -. "legacy path<br/>(no recordIkm)" .-> EncR1["enc(record proto)"]
     RIK -. "preferred path<br/>(recordIkm present)" .-> EncR2["enc(record proto)"]
+=======
+    SSK -->|deriveManifestKey(manifestVersion)| MKey["Manifest key\n(per version)"]
+    SSK -->|deriveLegacyRecordKey(itemIdentifier)| LRK["Legacy record key\n(per identifier)"]
+    Manifest["Manifest.recordIkm (32B)\nstored in the manifest"] -->|HKDF(info = prefix + identifier)| RIK["Record key\n(per identifier)"]
+
+    MKey -. AES-256-GCM .-> EncM["enc(manifest proto)"]
+    LRK -. "legacy path\n(no recordIkm)" .-> EncR1["enc(record proto)"]
+    RIK -. "preferred path\n(recordIkm present)" .-> EncR2["enc(record proto)"]
+>>>>>>> theirs
 ```
 
 ### Manifest encryption

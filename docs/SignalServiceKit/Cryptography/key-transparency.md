@@ -16,9 +16,13 @@ malicious server silently substituting keys.
 > **LibSignalClient**'s `KeyTransparency` module (out of tree) and reached through
 > `chatConnectionManager.keyTransparencyClient()`
 <<<<<<< ours
+<<<<<<< ours
 > (`SignalServiceKit/KeyTransparency/KeyTransparencyApiClient.swift:41-53`). The
 =======
 > (`SignalServiceKit/KeyTransparency/KeyTransparencyApiClient.swift:40-54`). The
+>>>>>>> theirs
+=======
+> (`SignalServiceKit/KeyTransparency/KeyTransparencyApiClient.swift:41-53`). The
 >>>>>>> theirs
 > Swift code here orchestrates **when** checks run, assembles their **inputs**,
 > persists LibSignal's opaque **blobs**, and tracks **self-check** health. **[High]**
@@ -30,9 +34,13 @@ malicious server silently substituting keys.
 A KT check needs an ACI + its identity key, optionally an E164 + unidentified
 access key, and optionally a username hash. These are bundled in `CheckParams`
 <<<<<<< ours
+<<<<<<< ours
 (`SignalServiceKit/KeyTransparency/KeyTransparencyManager.swift:82-91`): **[High]**
 =======
 (`SignalServiceKit/KeyTransparency/KeyTransparencyManager.swift:79-91`): **[High]**
+>>>>>>> theirs
+=======
+(`SignalServiceKit/KeyTransparency/KeyTransparencyManager.swift:82-91`): **[High]**
 >>>>>>> theirs
 
 - `aciInfo: KeyTransparency.AciInfo` — the ACI and its identity key.
@@ -40,15 +48,22 @@ access key, and optionally a username hash. These are bundled in `CheckParams`
 - `username: Username?`.
 - `localIdentifiers` + a derived `isLocalUser`
 <<<<<<< ours
+<<<<<<< ours
   (`KeyTransparencyManager.swift:88-90`). **[High]**
 =======
   (`KeyTransparencyManager.swift:85-90`). **[High]**
+>>>>>>> theirs
+=======
+  (`KeyTransparencyManager.swift:88-90`). **[High]**
 >>>>>>> theirs
 
 ### 1.1 Preparing a contact check (`prepareCheck`)
 
 `prepareCheck(aci:localIdentifiers:tx:)`
 <<<<<<< ours
+<<<<<<< ours
+=======
+>>>>>>> theirs
 (`KeyTransparencyManager.swift:99-158`) returns `nil` (cannot check) when: **[High]**
 
 - the ACI is the **local user** (`prepareAndPerformSelfCheck` must be used
@@ -62,6 +77,7 @@ access key, and optionally a username hash. These are bundled in `CheckParams`
 
 The username is not used when checking other users
 (`KeyTransparencyManager.swift:146-147`). **[High]**
+<<<<<<< ours
 =======
 (`KeyTransparencyManager.swift:98-157`) returns `nil` (cannot check) when: **[High]**
 
@@ -76,6 +92,8 @@ The username is not used when checking other users
 
 The username is not used when checking other users
 (`KeyTransparencyManager.swift:147-148`). **[High]**
+>>>>>>> theirs
+=======
 >>>>>>> theirs
 
 ---
@@ -97,15 +115,22 @@ flowchart TD
 - `performCheck` runs on a `KeyedConcurrentTaskQueue` with
   `concurrentLimitPerKey: 1`, so checks for the **same ACI** are serialized
 <<<<<<< ours
+<<<<<<< ours
   (`KeyTransparencyManager.swift:55`, `KeyTransparencyManager.swift:161-197`).
 =======
   (`KeyTransparencyManager.swift:26`, `KeyTransparencyManager.swift:158-200`).
+>>>>>>> theirs
+=======
+  (`KeyTransparencyManager.swift:55`, `KeyTransparencyManager.swift:161-197`).
 >>>>>>> theirs
   **[High]**
 - Network/rate-limit errors are retried **indefinitely** (`maxAttempts: .max`),
   honoring `SignalError.rateLimitedError` retry-after; the comment explains
   transient failures must not look like a KT failure
 <<<<<<< ours
+<<<<<<< ours
+=======
+>>>>>>> theirs
   (`KeyTransparencyManager.swift:166-189`). **[High]**
 - `_performCheck` (`KeyTransparencyManager.swift:199-238`): **[High]**
   - **Local user** → `apiClient.check(for: .self(isE164Discoverable:), ...)` using
@@ -114,6 +139,7 @@ flowchart TD
     state is `nil`, it runs one first; if it's any failure state, it **throws**
     `"Cannot check other with failed self-check."`
     (`KeyTransparencyManager.swift:220-228`). **[High]**
+<<<<<<< ours
 =======
   (`KeyTransparencyManager.swift:166-193`). **[High]**
 - `_performCheck` (`KeyTransparencyManager.swift:204-243`): **[High]**
@@ -123,6 +149,8 @@ flowchart TD
     state is `nil`, it runs one first; if it's any failure state, it **throws**
     `"Cannot check other with failed self-check."`
     (`KeyTransparencyManager.swift:220-242`). **[High]**
+>>>>>>> theirs
+=======
 >>>>>>> theirs
 
 > **Why gate others on self-check?** A failing self-check implies the client's own
@@ -140,6 +168,9 @@ The local user periodically re-validates its own account data against the KT log
 - **Cron**: `registerSelfCheckForCron(cron:)` schedules a frequent, must-be-
   registered/connected job that runs a self-check when KT is enabled and it is time
 <<<<<<< ours
+<<<<<<< ours
+=======
+>>>>>>> theirs
   (`KeyTransparencyManager.swift:246-284`). **[High]**
 - **On demand**: `performSelfCheckOnDemand()` (e.g. from Internal Settings)
   (`KeyTransparencyManager.swift:286-290`). **[High]**
@@ -178,6 +209,7 @@ The local user periodically re-validates its own account data against the KT log
 `succeeded = 1` at `:597`, `failedOnce = 2`, `failedRepeatedly = 3`,
 `failedRepeatedlyAndWarned = 4`). `recordSelfCheckFailure`
 (`KeyTransparencyManager.swift:427-479`) escalates: **[High]**
+<<<<<<< ours
 =======
   (`KeyTransparencyManager.swift:249-287`). **[High]**
 - **On demand**: `performSelfCheckOnDemand()` (e.g. from Internal Settings)
@@ -218,6 +250,8 @@ The local user periodically re-validates its own account data against the KT log
 `failedRepeatedlyAndWarned = 4`). `recordSelfCheckFailure`
 (`KeyTransparencyManager.swift:442-500`) escalates: **[High]**
 >>>>>>> theirs
+=======
+>>>>>>> theirs
 
 | Current state | New state | Next-Cron interval | Side effect |
 | --- | --- | --- | --- |
@@ -230,9 +264,13 @@ The first failure proactively kicks a Storage Service restore because a known
 failure mode is a linked device having changed KT-relevant state (e.g. username)
 that this device hasn't learned yet
 <<<<<<< ours
+<<<<<<< ours
 (`KeyTransparencyManager.swift:437-446`). **[High]**
 =======
 (`KeyTransparencyManager.swift:456-468`). **[High]**
+>>>>>>> theirs
+=======
+(`KeyTransparencyManager.swift:437-446`). **[High]**
 >>>>>>> theirs
 
 ```mermaid
@@ -251,10 +289,15 @@ stateDiagram-v2
 `shouldWarnSelfCheckFailed` is true only in `failedRepeatedly`; calling
 `setWarnedSelfCheckFailed` transitions it to `failedRepeatedlyAndWarned`
 <<<<<<< ours
+<<<<<<< ours
 (`KeyTransparencyManager.swift:616-623` `shouldWarnSelfCheckFailed`,
 `KeyTransparencyManager.swift:625-632` `setWarnedSelfCheckFailed`).
 =======
 (`KeyTransparencyManager.swift:` `shouldWarnSelfCheckFailed`/`setWarnedSelfCheckFailed`).
+>>>>>>> theirs
+=======
+(`KeyTransparencyManager.swift:616-623` `shouldWarnSelfCheckFailed`,
+`KeyTransparencyManager.swift:625-632` `setWarnedSelfCheckFailed`).
 >>>>>>> theirs
 **[High]**
 
@@ -264,6 +307,9 @@ stateDiagram-v2
 
 - `isEnabled` defaults to **true** when unset
 <<<<<<< ours
+<<<<<<< ours
+=======
+>>>>>>> theirs
   (`KeyTransparencyManager.swift:555-557`, `KeyTransparencyStore.isEnabled`). **[High]**
 - `setIsEnabled(_:updateStorageService:tx:)` persists the flag and, when
   **disabling**, wipes the distinguished tree head, the self-check state, resets the
@@ -272,6 +318,7 @@ stateDiagram-v2
   Optionally records a pending Storage Service account update so the opt-out syncs
   across devices (`KeyTransparencyManager.swift:72-75`, manager `setIsEnabled` at
   `:64-76`). **[High]**
+<<<<<<< ours
 =======
   (`KeyTransparencyManager.swift:` `KeyTransparencyStore.isEnabled`). **[High]**
 - `setIsEnabled(_:updateStorageService:tx:)` persists the flag and, when
@@ -280,6 +327,8 @@ stateDiagram-v2
   (`KeyTransparencyManager.swift:63-74`, `KeyTransparencyManager.swift:` `setIsEnabled`).
   Optionally records a pending Storage Service account update so the opt-out syncs
   across devices (`KeyTransparencyManager.swift:69-73`). **[High]**
+>>>>>>> theirs
+=======
 >>>>>>> theirs
 
 ---
@@ -291,6 +340,9 @@ Two storage surfaces: **[High]**
 ### 5.1 Key-value state (collection `KeyTransparency`)
 
 <<<<<<< ours
+<<<<<<< ours
+=======
+>>>>>>> theirs
 `KeyTransparencyStore` (`KeyTransparencyManager.swift:511`) uses a
 `NewKeyValueStore` with keys
 (`KeyTransparencyManager.swift:517-532`, `KVStoreKeys`): `isEnabled`, `selfCheckState`,
@@ -298,6 +350,7 @@ Two storage surfaces: **[High]**
 `distinguishedTreeHead`. The `distinguishedTreeHead` is an **opaque LibSignal blob**
 (`KeyTransparencyManager.swift:685-687` `getLastDistinguishedTreeHead`,
 `KeyTransparencyManager.swift:689-691` `setLastDistinguishedTreeHead`).
+<<<<<<< ours
 =======
 `KeyTransparencyStore` uses a `NewKeyValueStore` with keys
 (`KeyTransparencyManager.swift:` `KVStoreKeys`): `isEnabled`, `selfCheckState`,
@@ -305,11 +358,16 @@ Two storage surfaces: **[High]**
 `distinguishedTreeHead`. The `distinguishedTreeHead` is an **opaque LibSignal blob**
 (`KeyTransparencyManager.swift:` `getLastDistinguishedTreeHead`/`setLastDistinguishedTreeHead`).
 >>>>>>> theirs
+=======
+>>>>>>> theirs
 **[High]**
 
 The self-check Cron interval is `.day` when
 `BuildFlags.KeyTransparency.conservativeSelfCheck`, else `.week`
 <<<<<<< ours
+<<<<<<< ours
+=======
+>>>>>>> theirs
 (`KeyTransparencyManager.swift:537-544`, `KeyTransparencyStore.init`). **[High]**
 
 ### 5.2 Per-ACI blobs (table `KeyTransparency`)
@@ -318,6 +376,7 @@ The self-check Cron interval is `.day` when
 a GRDB row keyed by `aci: UUID` holding an opaque `libsignalBlob: Data`, with a
 `.replace`/`.replace` conflict policy (overwrite on re-insert)
 (`KeyTransparencyManager.swift:767-772`). **[High]**
+<<<<<<< ours
 =======
 (`KeyTransparencyManager.swift:` `KeyTransparencyStore.init`). **[High]**
 
@@ -327,6 +386,8 @@ a GRDB row keyed by `aci: UUID` holding an opaque `libsignalBlob: Data`, with a
 a GRDB row keyed by `aci: UUID` holding an opaque `libsignalBlob: Data`, with a
 `.replace`/`.replace` conflict policy (overwrite on re-insert). **[High]**
 >>>>>>> theirs
+=======
+>>>>>>> theirs
 
 ### 5.3 The LibSignal store adapter
 
@@ -334,10 +395,14 @@ a GRDB row keyed by `aci: UUID` holding an opaque `libsignalBlob: Data`, with a
 object passed into LibSignal's `check(...)`. It bridges
 `get/setLastDistinguishedTreeHead` and `get/setAccountData(for: aci)` to the two
 <<<<<<< ours
+<<<<<<< ours
 storage surfaces above (`KeyTransparencyManager.swift:724-760`). **[High]**
 =======
 storage surfaces above (`KeyTransparencyManager.swift:` `KeyTransparencyStoreForLibSignal`).
 **[High]**
+>>>>>>> theirs
+=======
+storage surfaces above (`KeyTransparencyManager.swift:724-760`). **[High]**
 >>>>>>> theirs
 
 ```mermaid
@@ -355,16 +420,22 @@ graph TD
 
 `handleSelfCheckIdentifierChanged(accountDataField:localAci:...)`
 <<<<<<< ours
+<<<<<<< ours
+=======
+>>>>>>> theirs
 (`KeyTransparencyManager.swift:483-506`, static `handleSelfCheckIdentifierChanged`)
 informs LibSignal that a monitored `AccountDataField` changed by calling
 `KeyTransparency.resetField(...)` with the `KeyTransparencyStoreForLibSignal`. A
 failure here only occurs for malformed data and is logged via `owsFailDebug`
 (`KeyTransparencyManager.swift:501-505`).
+<<<<<<< ours
 =======
 (`KeyTransparencyManager.swift:` static `handleSelfCheckIdentifierChanged`) informs
 LibSignal that a monitored `AccountDataField` changed by calling
 `KeyTransparency.resetField(...)` with the `KeyTransparencyStoreForLibSignal`. A
 failure here only occurs for malformed data and is logged via `owsFailDebug`.
+>>>>>>> theirs
+=======
 >>>>>>> theirs
 **[High]** The set of monitored fields and the reset semantics are defined in
 LibSignal — **intent undetermined — no evidence in source** here beyond the call.
@@ -376,12 +447,16 @@ LibSignal — **intent undetermined — no evidence in source** here beyond the 
 
 `KeyTransparencyApiClient`
 <<<<<<< ours
+<<<<<<< ours
+=======
+>>>>>>> theirs
 (`SignalServiceKit/KeyTransparency/KeyTransparencyApiClient.swift:8-16`) is a one-
 method protocol: `check(for:aciInfo:e164Info:usernameHash:)`. The impl obtains the
 LibSignal KT client from the chat connection and calls `ktClient.check(...)`,
 passing the `KeyTransparencyStoreForLibSignal`
 (`KeyTransparencyApiClient.swift:35-53`). The protocol exists so the network layer
 can be mocked (`KeyTransparencyApiClient.swift:8`). **[High]**
+<<<<<<< ours
 =======
 (`SignalServiceKit/KeyTransparency/KeyTransparencyApiClient.swift:8-15`) is a one-
 method protocol: `check(for:aciInfo:e164Info:usernameHash:)`. The impl obtains the
@@ -389,6 +464,8 @@ LibSignal KT client from the chat connection and calls `ktClient.check(...)`,
 passing the `KeyTransparencyStoreForLibSignal`
 (`KeyTransparencyApiClient.swift:19-54`). The protocol exists so the network layer
 can be mocked (`KeyTransparencyApiClient.swift:7`). **[High]**
+>>>>>>> theirs
+=======
 >>>>>>> theirs
 
 ---
@@ -398,6 +475,9 @@ can be mocked (`KeyTransparencyApiClient.swift:7`). **[High]**
 | Rule / error | Where | Citation |
 | --- | --- | --- |
 <<<<<<< ours
+<<<<<<< ours
+=======
+>>>>>>> theirs
 | Cannot check the local user via `prepareCheck` | `prepareCheck` | `SignalServiceKit/KeyTransparency/KeyTransparencyManager.swift:107-110` |
 | Opt-out blocks contact checks | `prepareCheck` | `SignalServiceKit/KeyTransparency/KeyTransparencyManager.swift:112-115` |
 | Missing identity key / E164 / UAK → no check | `prepareCheck` | `SignalServiceKit/KeyTransparency/KeyTransparencyManager.swift:117-144` |
@@ -409,6 +489,7 @@ can be mocked (`KeyTransparencyApiClient.swift:7`). **[High]**
 | Disabling KT wipes tree head + self-check + records | `setIsEnabled` | `SignalServiceKit/KeyTransparency/KeyTransparencyManager.swift:559-570` |
 | `isEnabled` defaults true | `KeyTransparencyStore.isEnabled` | `SignalServiceKit/KeyTransparency/KeyTransparencyManager.swift:555-557` |
 | `BuildFlags.KeyTransparency.conservativeSelfCheck` → daily vs weekly | `KeyTransparencyStore.init` | `SignalServiceKit/KeyTransparency/KeyTransparencyManager.swift:537-544` |
+<<<<<<< ours
 =======
 | Cannot check the local user via `prepareCheck` | `prepareCheck` | `SignalServiceKit/KeyTransparency/KeyTransparencyManager.swift:104-107` |
 | Opt-out blocks contact checks | `prepareCheck` | `SignalServiceKit/KeyTransparency/KeyTransparencyManager.swift:109-112` |
@@ -421,6 +502,8 @@ can be mocked (`KeyTransparencyApiClient.swift:7`). **[High]**
 | Disabling KT wipes tree head + self-check + records | `setIsEnabled` | `SignalServiceKit/KeyTransparency/KeyTransparencyManager.swift` (`setIsEnabled`) |
 | `isEnabled` defaults true | `KeyTransparencyStore.isEnabled` | `SignalServiceKit/KeyTransparency/KeyTransparencyManager.swift` (`isEnabled`) |
 | `BuildFlags.KeyTransparency.conservativeSelfCheck` → daily vs weekly | `KeyTransparencyStore.init` | `SignalServiceKit/KeyTransparency/KeyTransparencyManager.swift` (`init`) |
+>>>>>>> theirs
+=======
 >>>>>>> theirs
 
 ---

@@ -72,7 +72,11 @@ corrective push. **[High]**
 The local **account record is merged before everything else** (and even before
 the batched fetch), because it carries the user's own configuration that we want
 applied ASAP — especially right after linking
+<<<<<<< ours
 (`StorageServiceManager.swift:1562`). If the manifest is missing a local account
+=======
+(`StorageServiceManager.swift:1558`). If the manifest is missing a local account
+>>>>>>> theirs
 record, we mark our account `.updated` to re-push it. If the item vanishes
 between manifest-fetch and item-fetch (a linked device raced us), we also just
 mark `.updated`. **[High]**
