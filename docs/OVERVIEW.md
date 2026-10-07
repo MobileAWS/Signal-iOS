@@ -133,10 +133,6 @@ Key structural facts visible in the graph: **[High]**
   `SignalShareExtension`).
 - `SignalNSE` depends on SSK **only** — it does **not** depend on `SignalUI`. This
   is corroborated at the source level: there are no `import SignalUI` statements in
-<<<<<<< ours
-<<<<<<< ours
-=======
->>>>>>> theirs
   `SignalNSE/` (grep over `SignalNSE/*.swift` returns none), whereas nearly all
   `SignalShareExtension/` Swift files — 6 of the 7 — import `SignalUI`
   (the one exception is `SignalShareExtension/ShareAppExtensionContext.swift`, which
@@ -145,15 +141,10 @@ Key structural facts visible in the graph: **[High]**
   (`Signal.xcodeproj/project.pbxproj:16190-16193`, dependency `34A954D1`). **[High]**
   This matches the extension's constrained UI role (background push processing vs.
   share-sheet UI).
-<<<<<<< ours
-=======
   `SignalNSE/` (grep over `SignalNSE/*.swift` returns none), whereas every file in
   `SignalShareExtension/` imports `SignalUI` (e.g. `SignalShareExtension/ShareViewController.swift:8`).
   **[High]** This matches the extension's constrained UI role (background push
   processing vs. share-sheet UI).
->>>>>>> theirs
-=======
->>>>>>> theirs
 - The main `Signal` app depends on both app extensions (`SignalShareExtension`,
   `SignalNSE`) so that they are embedded in the app bundle. The main app bundle's
   build phases include an "Embed Foundation Extensions" phase that embeds
@@ -171,38 +162,22 @@ the dependency exists but are a sample, not an exhaustive enumeration.
 - `Signal` entry points import both lower frameworks, e.g.
   `Signal/AppLaunch/AppDelegate.swift:6` (`import SignalServiceKit`) and
   `Signal/AppLaunch/SignalApp.swift:6-7` (`import SignalServiceKit` / `import SignalUI`). **[High]**
-<<<<<<< ours
-<<<<<<< ours
-=======
->>>>>>> theirs
 - `SignalShareExtension/ShareViewController.swift:9` imports `SignalServiceKit` and
   `:10` `public import SignalUI` (`:8` is `import PureLayout`). **[High]**
 - `SignalNSE/NotificationService.swift:5` imports `SignalServiceKit` (and no
   `SignalUI`; `:6` is `import UIKit`). **[High]**
-<<<<<<< ours
-=======
 - `SignalShareExtension/ShareViewController.swift:7-9` imports `SignalServiceKit`
   and `SignalUI`. **[High]**
 - `SignalNSE/NotificationService.swift:6` imports `SignalServiceKit` (and no
   `SignalUI`). **[High]**
->>>>>>> theirs
-=======
->>>>>>> theirs
 
 ### CocoaPods dependency grouping
 
 The `Podfile` layers third-party pods onto these targets consistently with the graph: **[High]**
 
 - UI-oriented pods (`BonMot`, `PureLayout`, `lottie-ios`, MobileCoin) are grouped in
-<<<<<<< ours
-<<<<<<< ours
   `ui_pods` (`Podfile:44-51`) and applied to `Signal`, `SignalShareExtension`, and
-=======
   `ui_pods` (`Podfile:44-54`) and applied to `Signal`, `SignalShareExtension`, and
->>>>>>> theirs
-=======
-  `ui_pods` (`Podfile:44-51`) and applied to `Signal`, `SignalShareExtension`, and
->>>>>>> theirs
   `SignalUI` (`Podfile:57`, `:67`, `:71`) — the three UI-bearing targets.
 - `SignalServiceKit` additionally pulls `CocoaLumberjack` (`Podfile:79`).
 - `SignalNSE` declares no extra pods of its own (`Podfile:86-87`); it inherits what
@@ -286,18 +261,10 @@ point, `AppSetup` (`SignalServiceKit/Environment/AppSetup.swift:10`), whose
 `start(appContext:databaseStorage:)` begins a continuation chain
 (`SignalServiceKit/Environment/AppSetup.swift:18-26`). **[High]** Each host calls it:
 
-<<<<<<< ours
-<<<<<<< ours
 - Main app: `AppSetup().start(…)` (`Signal/AppLaunch/AppLifecycleManager.swift:489`)
   then `migrateDatabaseSchema()` (`:493`) / `initGlobals(…)` (`:494`). **[High]**
-=======
 - Main app: `AppSetup().start(…)` then `migrateDatabaseSchema()` / `initGlobals(…)`
   in `Signal/AppLaunch/AppLifecycleManager.swift:489`. **[High]**
->>>>>>> theirs
-=======
-- Main app: `AppSetup().start(…)` (`Signal/AppLaunch/AppLifecycleManager.swift:489`)
-  then `migrateDatabaseSchema()` (`:493`) / `initGlobals(…)` (`:494`). **[High]**
->>>>>>> theirs
 - NSE: `await AppSetup().start(…)` in `SignalNSE/NSEEnvironment.swift:57`
   (returns an `AppSetup.FinalContinuation`, `:44`). **[High]**
 - Share extension: `await AppSetup().start(…)` in
@@ -322,17 +289,9 @@ forwards UIKit callbacks to it — e.g. `application(_:didFinishLaunchingWithOpt
 calls `lifecycleManager.didFinishLaunching(launchOptions:)`
 (`Signal/AppLaunch/AppDelegate.swift:19-25`). **[High]** The file's own doc comment
 states that UI-scene events arrive in `SceneDelegate` instead
-<<<<<<< ours
-<<<<<<< ours
 (`Signal/AppLaunch/AppDelegate.swift:9-12`; the `SceneDelegate` note is at `:12`;
 see `Signal/AppLaunch/SceneDelegate.swift`). **[High]**
-=======
 (`Signal/AppLaunch/AppDelegate.swift:8-10`; see `Signal/AppLaunch/SceneDelegate.swift`). **[High]**
->>>>>>> theirs
-=======
-(`Signal/AppLaunch/AppDelegate.swift:9-12`; the `SceneDelegate` note is at `:12`;
-see `Signal/AppLaunch/SceneDelegate.swift`). **[High]**
->>>>>>> theirs
 `SignalApp` (`Signal/AppLaunch/SignalApp.swift:16`) is the app-level coordinator that,
 for example, swaps the window's root between registration, provisioning, and the
 chat list (`LaunchInterface`, `Signal/AppLaunch/SignalApp.swift:10-13`). **[High]**
@@ -344,21 +303,12 @@ The NSE's principal class is `NotificationService: UNNotificationServiceExtensio
 the file's header comment: the system instantiates the extension when a push arrives,
 calls `didReceive` in the background, the extension processes messages and must call
 the content handler, and iOS terminates it if it exceeds ~30s
-<<<<<<< ours
-<<<<<<< ours
 (`SignalNSE/NotificationService.swift:10-27`). **[High]** A single `NSEEnvironment`
 singleton is kept per process so that app context, database, and logging are set up
 only once (`SignalNSE/NotificationService.swift:28-30`; `globalEnvironment` at `:31`).
-=======
 (`SignalNSE/NotificationService.swift:9-22`). **[High]** A single `NSEEnvironment`
 singleton is kept per process so that app context, database, and logging are set up
 only once (`SignalNSE/NotificationService.swift:25-31`; `globalEnvironment` at `:31`).
->>>>>>> theirs
-=======
-(`SignalNSE/NotificationService.swift:10-27`). **[High]** A single `NSEEnvironment`
-singleton is kept per process so that app context, database, and logging are set up
-only once (`SignalNSE/NotificationService.swift:28-30`; `globalEnvironment` at `:31`).
->>>>>>> theirs
 **[High]** The NSE depends on `SignalServiceKit` only (see graph above), consistent
 with it having no first-party UI framework dependency. **[High]**
 
@@ -377,18 +327,10 @@ repeated here.
 `SignalUI` is a framework target (`Signal.xcodeproj/project.pbxproj:16157`) that
 layers reusable UI on top of `SignalServiceKit` and is consumed by both the main app
 and the share extension (graph above). Its umbrella header
-<<<<<<< ours
-<<<<<<< ours
 `SignalUI/SignalUI.h` imports `UIKit` (`SignalUI/SignalUI.h:6`) and re-exports UI
 helpers (e.g. `SignalUI/SignalUI.h:8`). **[High]** The specific catalog of components it exports
-=======
 `SignalUI/SignalUI.h` imports `UIKit` and re-exports UI helpers
 (`SignalUI/SignalUI.h:5-7`). **[High]** The specific catalog of components it exports
->>>>>>> theirs
-=======
-`SignalUI/SignalUI.h` imports `UIKit` (`SignalUI/SignalUI.h:6`) and re-exports UI
-helpers (e.g. `SignalUI/SignalUI.h:8`). **[High]** The specific catalog of components it exports
->>>>>>> theirs
 is broad (271 Swift files) and is **not** enumerated here — this is an overview, not a
 component reference.
 
