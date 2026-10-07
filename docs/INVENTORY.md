@@ -59,16 +59,7 @@ assigned to the first matching category).
 | 4 | **Assets / localization** | `*.xcassets/**`, `Signal/translations/**`, `fastlane/metadata/**` |
 | 5 | **Build / CI** | `Config/`, `Scripts/`, `ci_scripts/`, `fastlane/` (minus metadata), `.github/`, `*.xcodeproj`, `*.xcworkspace`, `Podfile`, `Makefile` |
 | 6 | **First-party code** | Everything else under the five module roots (`Signal/`, `SignalServiceKit/`, `SignalUI/`, `SignalNSE/`, `SignalShareExtension/`) |
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
 | 7 | **Documentation / Meta** | Catch-all for repository-level documentation, legal, and meta files that belong to no module and are neither build/CI config nor assets: the root docs/legal files (`README.md`, `BUILDING.md`, `CONTRIBUTING.md`, `MAINTAINING.md`, `SECURITY.md`, `LICENSE`) and the `docs/` directory itself |
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
 
 Priority matters: e.g. `SignalServiceKit/Protos/` Swift files are **generated**, not
 first-party; `SignalServiceKit/tests/MessageBackup/Signal-Message-Backup-Tests` is a
@@ -85,52 +76,23 @@ first-party and generated content) and file counts for asset/config categories w
 | Category | Metric | Count |
 |----------|--------|-------|
 | First-party code (Swift, all modules, excl. tests & generated) | lines | **629,457** |
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
 | First-party code (Objective-C, all modules, `.m` + `.h`) | lines (75 files) | **10,116** |
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
 | Generated code — `*+SDS.swift` | lines (24 files) | **8,617** |
 | Generated code — protobuf output under `SignalServiceKit/Protos/` | lines (22 `.swift` files) | **68,208** |
 | Tests (Swift, all modules + Mocks + TestUtils) | lines | **77,075** |
 | Assets — `*.xcassets` | files (4 catalogs) | **1,233** |
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
 | Localization — `Signal/translations/` | files (47 `.lproj` dirs) | **142** |
 | Localization — `fastlane/metadata/` | files (43 locales) | **86** |
-=======
 | Localization — `Signal/translations/` | files (48 `.lproj` dirs) | **142** |
 | Localization — `fastlane/metadata/` | files (44 locales) | **86** |
->>>>>>> theirs
-=======
 | Localization — `Signal/translations/` | files (48 `.lproj` dirs) | **142** |
 | Localization — `fastlane/metadata/` | files (44 locales) | **86** |
->>>>>>> theirs
-=======
-| Localization — `Signal/translations/` | files (48 `.lproj` dirs) | **142** |
-| Localization — `fastlane/metadata/` | files (44 locales) | **86** |
->>>>>>> theirs
 | Build / CI — `Scripts/` | files | **56** |
 | Build / CI — `.github/` | files | **12** |
 | Build / CI — `ci_scripts/` | files | **6** |
 | Vendored — `Pods/` submodule | — | **not checked out** |
 | Vendored — `ThirdParty/` | files | **2** |
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
 | Documentation / Meta (root docs/legal + `docs/`) | files | **7** |
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
 
 Derivation of the first-party Swift total:
 
@@ -157,9 +119,6 @@ double-counting.
 > small number of `.swift` files live outside module roots (e.g. tooling under
 > `Scripts/`). The grand total is recorded here for completeness.
 
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
 > Non-Swift first-party source: the five module roots also contain **75 Objective-C
 > files** (34 `.m` + 41 `.h`) totalling **10,116 lines**. These are concentrated almost
 > entirely in `SignalServiceKit` (72 files, 10,044 lines) with a small remainder in
@@ -172,12 +131,6 @@ double-counting.
 >   \( -name '*.m' -o -name '*.h' \) -type f -exec cat {} + | wc -l   # 10,116
 > ```
 
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
 ---
 
 ## 4. Per-category inventory
@@ -199,9 +152,6 @@ Declared submodules — `.gitmodules:1-6`:
 
 - **`Pods/`** — CocoaPods dependencies, pulled from the `Signal-Pods` submodule.
   **Empty in this checkout** (submodule not initialized). The dependency set is pinned
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
   in `Podfile.lock`. The lockfile declares **17 top-level dependencies** (the
   `DEPENDENCIES:` section) which resolve to **27 top-level `PODS:` entries** (including
   subspecs) and **17 resolved pods** recorded under `SPEC CHECKSUMS:`. Examples include
@@ -216,22 +166,10 @@ Declared submodules — `.gitmodules:1-6`:
   # 17 SPEC CHECKSUMS (resolved pods)
   awk '/^SPEC CHECKSUMS:/{f=1;next} /^$/{f=0} f' Podfile.lock | wc -l   # 17
   ```
-=======
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
   in `Podfile.lock` (57 pod entries); examples include `GRDB.swift/SQLCipher (5.26.0)`
   (`Podfile.lock:7`), `LibSignalClient (0.103.1)` (`Podfile.lock:12`),
   `SignalRingRTC (2.72.0)` (`Podfile.lock:38`), `SwiftProtobuf (1.38.1)`
   (`Podfile.lock:46`).
-<<<<<<< ours
-<<<<<<< ours
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
 - **`SignalServiceKit/tests/MessageBackup/Signal-Message-Backup-Tests`** — vendored
   message-backup test vectors submodule. **Empty in this checkout.**
 - **`ThirdParty/`** — 2 vendored podspecs consumed locally:
@@ -275,9 +213,6 @@ dependencies: pod-setup backup-tests-setup fetch-ringrtc
 | SignalShareExtension | 0 | 0 |
 | **Total** | **370** | **77,075** |
 
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
 The SignalServiceKit figure (290 files, 55,915 lines) reconciles exactly from five
 components:
 
@@ -298,22 +233,10 @@ out explicitly here so the breakdown reconciles to the 55,915 total. The two nes
 not the top-level `SignalServiceKit/Mocks/` directory, so they are counted separately.
 The bulk sits under `SignalServiceKit/tests/` (238 files, 46,288 lines) and
 `Signal/test/` (70 files, 19,487 lines).
-=======
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
 The SignalServiceKit figure includes `SignalServiceKit/Mocks/` (17 files, 897 lines)
 and `SignalServiceKit/TestUtils/` (11 files, 2,973 lines), which are test-support code
 rather than production code. The bulk sits under `SignalServiceKit/tests/` (238 files,
 46,288 lines) and `Signal/test/` (70 files, 19,487 lines).
-<<<<<<< ours
-<<<<<<< ours
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
 
 ### Assets / localization
 
@@ -323,33 +246,18 @@ rather than production code. The bulk sits under `SignalServiceKit/tests/` (238 
 | `Signal/Images.xcassets` | 368 |
 | `Signal/NSE-Images.xcassets` | 5 |
 | `Signal/Symbols.xcassets` | 834 |
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
 | `Signal/translations/` (47 `.lproj` dirs) | 142 |
 | `fastlane/metadata/` (43 App Store locales) | 86 |
 
 Four `*.xcassets` catalogs totalling **1,233** files. Localization is split between
 in-app strings (`Signal/translations/`, 47 locales) and App Store listing metadata
 (`fastlane/metadata/`, 43 locales such as `ar-SA`, `zh-Hans`, `pt-BR`).
-=======
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
 | `Signal/translations/` (48 `.lproj` dirs) | 142 |
 | `fastlane/metadata/` (44 App Store locales) | 86 |
 
 Four `*.xcassets` catalogs totalling **1,233** files. Localization is split between
 in-app strings (`Signal/translations/`, 48 locales) and App Store listing metadata
 (`fastlane/metadata/`, 44 locales such as `ar-SA`, `zh-Hans`, `pt-BR`).
-<<<<<<< ours
-<<<<<<< ours
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
 
 ### Build / CI
 
@@ -369,9 +277,6 @@ Loose root-level build/CI files also include `Gemfile`, `Gemfile.lock`,
 `.swiftformat`, `.clang-format`, `.ruby-version`, `.xcode-version`, `.gitmodules`,
 `.gitignore`, `.gitattributes`.
 
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
 ### Documentation / Meta
 
 Repository-level documentation and legal files that belong to no module and are neither
@@ -392,12 +297,6 @@ That is **6 root documentation/legal files + the `docs/` directory** (7 top-leve
 entries total). The `docs/` directory is self-referential: it is produced by this
 documentation effort and classified here rather than under any module.
 
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
 ---
 
 ## 5. Module boundary map
@@ -477,27 +376,15 @@ flagged inline rather than removed, so the tables reconcile with the module tota
 | `Backups` | 122 | 39,775 | first-party |
 | `Util` | 138 | 23,233 | first-party |
 | `Storage` | 52 | 19,149 | first-party |
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
 | `Groups` | 38 | 12,871 | first-party |
 | `Network` | 58 | 11,724 | first-party |
 | `Contacts` | 53 | 11,435 | first-party |
-=======
 | `Contacts` | 53 | 11,435 | first-party |
 | `Groups` | 38 | 12,871 | first-party |
 | `Network` | 58 | 11,724 | first-party |
->>>>>>> theirs
-=======
 | `Contacts` | 53 | 11,435 | first-party |
 | `Groups` | 38 | 12,871 | first-party |
 | `Network` | 58 | 11,724 | first-party |
->>>>>>> theirs
-=======
-| `Contacts` | 53 | 11,435 | first-party |
-| `Groups` | 38 | 12,871 | first-party |
-| `Network` | 58 | 11,724 | first-party |
->>>>>>> theirs
 | `Calls` | 50 | 8,382 | first-party (contains some `+SDS.swift`) |
 | `Subscriptions` | 39 | 7,474 | first-party |
 | `Profiles` | 14 | 5,884 | first-party |
@@ -505,23 +392,12 @@ flagged inline rather than removed, so the tables reconcile with the module tota
 | `Environment` | 7 | 5,256 | first-party |
 | `Jobs` | 21 | 5,098 | first-party |
 | `Account` | 32 | 4,044 | first-party |
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
 | `Axolotl` | 23 | 3,829 | first-party |
 | `Devices` | 27 | 3,828 | first-party |
-=======
 | `Devices` | 27 | 3,828 | first-party |
 | `Axolotl` | 23 | 3,829 | first-party |
->>>>>>> theirs
-=======
 | `Devices` | 27 | 3,828 | first-party |
 | `Axolotl` | 23 | 3,829 | first-party |
->>>>>>> theirs
-=======
-| `Devices` | 27 | 3,828 | first-party |
-| `Axolotl` | 23 | 3,829 | first-party |
->>>>>>> theirs
 | `Payments` | 14 | 3,764 | first-party |
 | `Notifications` | 7 | 3,189 | first-party |
 | `TestUtils` | 11 | 2,973 | **tests** |
@@ -529,23 +405,12 @@ flagged inline rather than removed, so the tables reconcile with the module tota
 | `Threads` | 12 | 2,467 | first-party |
 | `Cryptography` | 10 | 2,186 | first-party |
 | `Usernames` | 16 | 2,112 | first-party |
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
 | `Megaphones` | 8 | 2,037 | first-party |
 | `Avatars` | 4 | 2,035 | first-party |
-=======
 | `Avatars` | 4 | 2,035 | first-party |
 | `Megaphones` | 8 | 2,037 | first-party |
->>>>>>> theirs
-=======
 | `Avatars` | 4 | 2,035 | first-party |
 | `Megaphones` | 8 | 2,037 | first-party |
->>>>>>> theirs
-=======
-| `Avatars` | 4 | 2,035 | first-party |
-| `Megaphones` | 8 | 2,037 | first-party |
->>>>>>> theirs
 | `SecureValueRecovery` | 15 | 1,652 | first-party |
 | `PromiseKit` | 17 | 1,542 | first-party |
 | `UISupport` | 10 | 1,464 | first-party |
@@ -554,27 +419,15 @@ flagged inline rather than removed, so the tables reconcile with the module tota
 | `ZeroKnowledge` | 5 | 1,020 | first-party |
 | `AttachmentBackfill` | 4 | 921 | first-party |
 | `Mocks` | 17 | 897 | **tests** |
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
 | `Registration` | 4 | 881 | first-party |
 | `Spam` | 6 | 871 | first-party |
 | `KeyTransparency` | 2 | 865 | first-party |
-=======
 | `Spam` | 6 | 871 | first-party |
 | `KeyTransparency` | 2 | 865 | first-party |
 | `Registration` | 4 | 881 | first-party |
->>>>>>> theirs
-=======
 | `Spam` | 6 | 871 | first-party |
 | `KeyTransparency` | 2 | 865 | first-party |
 | `Registration` | 4 | 881 | first-party |
->>>>>>> theirs
-=======
-| `Spam` | 6 | 871 | first-party |
-| `KeyTransparency` | 2 | 865 | first-party |
-| `Registration` | 4 | 881 | first-party |
->>>>>>> theirs
 | `Search` | 2 | 685 | first-party |
 | `PinnedThreadManager` | 5 | 583 | first-party |
 | `DisappearingMessages` | 4 | 442 | first-party |
